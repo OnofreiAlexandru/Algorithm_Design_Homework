@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <malloc.h>
+#include <stdio.h>
+#include <stdlib.h>
 
  //Function that returns the bigger number out of 2 given numbers.
 
-int max(int a , int b){
+long max(long a , long b){
     if(a>=b){
        return a;
     }else{
@@ -16,29 +18,29 @@ int max(int a , int b){
 
 // Function that generates and prints lobsters and their specific attributes randomly.
 // The maximum size and value a lobster can have is given by the user.
-void generate_and_print_lobsters(int sizes[], int values[], int no_lobsters) {
-    int max_size, max_value;
+void generate_and_print_lobsters(long sizes[], long values[], long no_lobsters) {
+    long max_size, max_value;
 
     printf("Input maximum size range: \n");
-    scanf("%d", &max_size);
+    scanf("%ld", &max_size);
     printf("Input maximum value range: \n");
-    scanf("%d", &max_value);
+    scanf("%ld", &max_value);
     printf("*** Lobsters ***\n");
 
-    for (int i = 0; i < no_lobsters; i++) {
+    for (long i = 0; i < no_lobsters; i++) {
         sizes[i] = rand() % (max_size + 1);
         values[i] = rand() % (max_value + 1);
-        printf("Lobster no.%d: size %d, value %d\n", i + 1, sizes[i], values[i]);
+        printf("Lobster no.%ld: size %ld, value %ld\n", i + 1, sizes[i], values[i]);
     }
 }
 
 // Function that calculates the maximum value that can be obtained in the net
 // and prints the maximum value.
-void dp_lobsters(int net_capacity, int sizes[], int values[], int no_lobsters) {
-    int dp[no_lobsters + 1][net_capacity + 1];
 
-    for (int i = 0; i <= no_lobsters; i++) {        //This line searches for every lobster.
-        for (int s = 0; s <= net_capacity; s++) {      //This line searches for all the possible sizes until it reaches the current lobster's size.
+void dp_lobsters(long net_capacity, long sizes[], long values[], long no_lobsters, long* dp[]) {
+
+    for (long i = 0; i <= no_lobsters; i++) {        //This line searches for every lobster.
+        for (long s = 0; s <= net_capacity; s++) {      //This line searches for all the possible sizes until it reaches the current lobster's size.
             if (i == 0 || s == 0) {                 //If either the size or the lobster has no value , then the respective cell will be null.
                 dp[i][s] = 0;
             } else if (sizes[i - 1] <= s) {         //If the size iterator reaches the current lobster's size , we verify if the lobster can be added
@@ -49,19 +51,23 @@ void dp_lobsters(int net_capacity, int sizes[], int values[], int no_lobsters) {
         }
     }
 
-    printf("Maximum value in net = %d\n", dp[no_lobsters][net_capacity]);
+    printf("Maximum value in net = %ld\n", dp[no_lobsters][net_capacity]);
 }
 
-int main() {
-    int no_lobsters, net_capacity;
+main() {
+    long no_lobsters, net_capacity;
 
     printf("Input the size of the net: \n");            //Input of the net's capacity and the number of lobsters.
     scanf("%d", &net_capacity);
     printf("Input the number of lobsters: \n");
     scanf("%d", &no_lobsters);
 
-    int *sizes = (int *)malloc(no_lobsters * sizeof(int));          //Memory allocation.
-    int *values = (int *)malloc(no_lobsters * sizeof(int));
+    long *sizes = (long *)malloc(no_lobsters * sizeof(long));          //Memory allocation.
+    long *values = (long *)malloc(no_lobsters * sizeof(long));
+    long *dp[no_lobsters+1];
+    for(int i = 0; i <= no_lobsters; i++){
+        dp[i] = (long *)malloc(net_capacity * sizeof(long));
+    }
 
     if (sizes == NULL || values == NULL) {          //Verifies if the memory allocation was done.
         printf("Memory allocation failed\n");
@@ -71,10 +77,11 @@ int main() {
     srand(time(NULL));  // Initialize random seed
 
     generate_and_print_lobsters(sizes, values, no_lobsters);               //Generation and printing of the lobsters using the random seed.
-    dp_lobsters(net_capacity, sizes, values, no_lobsters);                 //Calculation of the maximum value that can be obtained in the net.
+    dp_lobsters(net_capacity, sizes, values, no_lobsters, dp);                 //Calculation of the maximum value that can be obtained in the net.
 
     free(sizes);                //Memory deallocation.
     free(values);
+    free(dp);
 
     return 0;
 }

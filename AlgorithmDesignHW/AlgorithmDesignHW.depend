@@ -1,7 +1,9 @@
 # depslib dependency file v1.0
-1716444394 source:c:\users\ono\desktop\facultate\algorithm design\algorithmdesignhw\main.c
+1716455434 source:c:\users\ono\desktop\facultate\algorithm design\algorithmdesignhw\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	<malloc.h>
+	<stdio.h>
+	<stdlib.h>
 
